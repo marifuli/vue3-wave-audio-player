@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- <link href="style.css" rel="stylesheet" /> -->
+    <!-- <script type="module" src="./wave-audio-player.umd.js"></script> -->
+    <!-- <script src="/src/wave.js"></script> -->
+    <script type="module" src="./src/wave-audio-player.min.js"></script>
+</head>
+<body>
+
+    <div id="app">
+
+        <h3>
+          <span>Default</span>
+        </h3>
+        <wave-audio-player src="hello_world.ogg" wave-width="200" wave-height="40"></wave-audio-player>
+
+        <h3>Animation</h3>
+        <wave-audio-player src="hello_world.ogg" wave-width="200" wave-height="40" wave-options='{"animation":true,"samples":50}'></wave-audio-player>
+
+        <h3>Customized Attributes</h3>
+        <wave-audio-player
+            src="hello_world.ogg"
+            wave-width="200"
+            wave-height="40"
+            color="#55007f"
+            wave-color="#55007f"
+            wave-progress-color="#ff00ff"
+            wave-slider="#ffaaff"
+            wave-options='{"samples":40,"type":"steps","width":192,"height":40}'
+        ></wave-audio-player>
+
+        <wave-audio-player
+            src="hello_world.ogg"
+            wave-width="200"
+            wave-height="80"
+            color="#00aa7f"
+            wave-color="#00aa7f"
+            wave-progress-color="#aaff00"
+            wave-slider="#00aa00"
+            wave-options='{"samples":50,"type":"steps","paths":[{"d":"V","sy":0,"x":0,"ey":100},{"d":"A","sx":0,"sy":100,"ex":100,"ey":100,"rx":10,"ry":10,"angle":180,"arc":1,"sweep":1},{"d":"V","sy":0,"x":100,"ey":100}]}'
+        ></wave-audio-player>
+
+        <h3>Customized CSS</h3>
+        <wave-audio-player id="demo1" src="hello_world.ogg" wave-width="200" wave-height="40"></wave-audio-player>
+
+        <wave-audio-player id="demo2" src="hello_world.ogg" wave-width="200" wave-height="40"></wave-audio-player>
+
+    </div>
+    
+</body>
+</html>
