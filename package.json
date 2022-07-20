@@ -1,9 +1,27 @@
 {
   "name": "vue3-wave-audio-player",
   "version": "0.1.0",
+  "description": "Vue 3 Component for wave audio player",
+  "license": "MIT",
+  "author": "Ariful Islam <imdarif122@mail.com>",
+  "private": false,
+  "files": [
+    "src"
+  ],
+  "main": "./src/main.js",
+  "keywords": [
+    "vue-audio-player",
+    "vue3-audio-player",
+    "vue-audio",
+    "vue3-audio",
+    "vue-music",
+    "vue3-music",
+    "audio-player",
+    "audio"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/1014156094/vue-audio-player.git"
+    "url": "https://github.com/marifuli/vue3-wave-audio-player"
   },
   "scripts": {
     "serve": "vue-cli-service serve",
