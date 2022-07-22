@@ -4,12 +4,14 @@
     :wave_width="250"
     :wave_height="40"
     wave_type="mirror"
-    src="/samples/file.mp3"
+    src="/samples/file.mp"
     />  
+
+    <!-- optional wave_options -->
     <Vue3WaveAudioPlayer
     :wave_width="250"
     :wave_height="40"
-    :wave_options='{"samples":50}'
+    :wave_options='{"samples":50}' 
     src="/samples/file.mp3"
     />  
     <Vue3WaveAudioPlayer
@@ -41,6 +43,11 @@ export default {
   name: 'App',
   components: {
     Vue3WaveAudioPlayer
+  },
+  methods: {
+    onError (e) {
+      console.log(e)
+    },
   }
 }
 </script>

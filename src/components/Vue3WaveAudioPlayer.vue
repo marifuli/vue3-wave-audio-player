@@ -24,7 +24,7 @@
             >
                 <!-- <template v-if="animation"> -->
                     <defs>
-                        <clipPath id="left-to-right-x">
+                        <clipPath :id="clipPathX">
                             <rect 
                             x="-1" y="-100" 
                             :width="wave_width + 2" 
@@ -39,7 +39,7 @@
                                 fill="freeze" />
                             </rect>
                         </clipPath>
-                        <clipPath id="left-to-right">
+                        <clipPath :id="clipPathA">
                             <rect 
                             :x="-1*(wave_width + 2)" y="-100" 
                             :width="wave_width + 2" 
@@ -57,9 +57,9 @@
                             </rect>
                         </clipPath>
                     </defs>
-                    <path id="path1" ref="path1" stroke-width="2" :d="path1_d" clip-path="url(#left-to-right-x)"></path>
+                    <path id="path1" ref="path1" stroke-width="2" :d="path1_d" :clip-path="'url(#'+clipPathX+')'"></path>
                     <path 
-                    id="path2" ref="path2" stroke-width="2" :d="path2_d" clip-path="url(#left-to-right)" 
+                    id="path2" ref="path2" stroke-width="2" :d="path2_d" :clip-path="'url(#'+clipPathA+')'" 
                     :style="{display: path2_display}"
                     ></path>
                 <!-- </template> -->
@@ -94,6 +94,27 @@
     <audio :src="src" ref="audio_tag"
     @loadedmetadata="loadSong"
     @ended="onFinish"
+
+    @abort="$emit('on_abort', $event)"
+    @canplay="$emit('on_canplay', $event)"
+    @canplaythrough="$emit('on_canplaythrough', $event)"
+    @durationchange="$emit('on_durationchange', $event)"
+    @emptied="$emit('on_emptied', $event)"
+    @error="$emit('on_error', $event)"
+    @loadeddata="$emit('on_loadeddata', $event)"
+    @loadstart="$emit('on_loadstart', $event)"
+    @pause="$emit('on_pause', $event)"
+    @play="$emit('on_play', $event)"
+    @playing="$emit('on_playing', $event)"
+    @progress="$emit('on_progress', $event)"
+    @ratechange="$emit('on_ratechange', $event)"
+    @seeked="$emit('on_seeked', $event)"
+    @seeking="$emit('on_seeking', $event)"
+    @stalled="$emit('on_stalled', $event)"
+    @suspend="$emit('on_suspend', $event)"
+    @timeupdate="$emit('on_timeupdate', $event)"
+    @volumechange="$emit('on_volumechange', $event)"
+    @waiting="$emit('waiting', $event)"
     ></audio>
 </template>
 
@@ -169,6 +190,9 @@ export default {
       path2_d: null,
       audioPathLoaded: false,
       animationsvg_val: '',
+
+      clipPathX: 'left-to-right-x',
+      clipPathA: 'left-to-right',
     }
   },
   beforeMount () {
@@ -197,7 +221,8 @@ export default {
       this.animation = this.wave_animation
     }
     //- finish seettings
-
+    this.clipPathX += '-' + Math.random().toString(36).slice(2)
+    this.clipPathA += '-' + Math.random().toString(36).slice(2)
   },
   mounted () {
     this.playPathButton = this.$refs.player.querySelector('#playPathButton')
@@ -216,17 +241,18 @@ export default {
     this.animationsvg_val = '-'+ (this.wave_width + 2) +';-1'
   },
   methods: {
-    loadSong () { // done
-        this.durationContainer_textContent = this.calculateTime(this.audio.duration);
-        this.seekSlider.max = this.audio.duration;
-        this.svg.unpauseAnimations();
+    loadSong ($event) { // done
+        this.durationContainer_textContent = this.calculateTime(this.audio.duration)
+        this.seekSlider.max = this.audio.duration
+        this.svg.unpauseAnimations()
         this.animationsvg_dur = this.audio.duration +"s"
         if(!this.animation) 
         {
             this.animationsvgx_dur = this.audio.duration +"s"
         }
-        this.svg.pauseAnimations();
+        this.svg.pauseAnimations()
         this.svg.setCurrentTime(0)
+        this.$emit('on_loadedmetadata', $event)
     },
     playPause () { //done 
       if(!this.audioPathLoaded)
@@ -268,16 +294,17 @@ export default {
             this.raf = requestAnimationFrame(this.whilePlaying);
         }
     },
-    onFinish () {
+    onFinish ($event) {
         this.seekSlider.value = this.seekSlider.max;
         this.svg.setCurrentTime(this.audio.duration);
         this.svg.pauseAnimations();
         // this.playPathButton.setAttribute("d", this.playPath);
         this.audio_paused = true 
         cancelAnimationFrame(this.raf);
+        this.$emit('on_ended', $event)
     },
     whilePlaying () {
-        console.log('Log animation running')
+        // console.log('Log animation running')
         this.seekSlider.value = this.audio.currentTime;
         this.currentTimeContainer_textContent = this.calculateTime(this.seekSlider.value);
         this.svg.setCurrentTime(this.seekSlider.value);
@@ -289,7 +316,7 @@ export default {
     },
     svgDraw () {
         const path = this.linearPath(this.audioData, this.player_options);
-        console.log(path)
+        // console.log(path)
         if(!this.animation) 
         {
             this.path1_d = path
