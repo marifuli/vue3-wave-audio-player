@@ -37,7 +37,7 @@ export default {
 }
 </script>
 ```
-### Attribute
+### Attributes
 Name | Required | Type | Description
 --- | --- | --- | --- 
 src | True | audio file | Source path to audio file
@@ -46,7 +46,7 @@ wave_height | True | Integer | Height of the waves (Not Responsive)
 wave_type | False | String | Type of wave. (Not working yet)
 wave_options | False | Object | Set settings for the waves (Not working yet)
 
-### Event
+### Events
 I have added all the events that html has in the audio tag with a "on_" prefix.
 ```
 // Example 
@@ -59,6 +59,7 @@ src="/samples/file.mp3"
 @on_ended="customCallback" // ... many more
 /> 
 ```
+Check [MDN Doc](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) for all the events.
 
 ### Inspired by:
 [wave-path-audio-player](https://www.npmjs.com/package/wave-audio-path-player) package
