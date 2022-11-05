@@ -144,6 +144,10 @@ export default {
       type: String,
       default: 'mirror'
     },
+    load_audio_onmount: {
+      type: Boolean,
+      default: true
+    },
   },
   data () {
     return {
@@ -253,6 +257,12 @@ export default {
         this.svg.pauseAnimations()
         this.svg.setCurrentTime(0)
         this.$emit('on_loadedmetadata', $event)
+
+        if(!this.audioPathLoaded && this.load_audio_onmount)
+        {
+            this.audioPath()
+            this.audioPathLoaded = true 
+        }
     },
     playPause () { //done 
       if(!this.audioPathLoaded)

@@ -4,7 +4,7 @@
     :wave_width="250"
     :wave_height="40"
     wave_type="mirror"
-    src="/samples/file.mp"
+    src="/samples/file.mp3"
     />  
 
     <!-- optional wave_options -->
@@ -13,6 +13,7 @@
     :wave_height="40"
     :wave_options='{"samples":50}' 
     src="/samples/file.mp3"
+    :load_audio_onmount="false"
     />  
     <Vue3WaveAudioPlayer
     :wave_width="250"

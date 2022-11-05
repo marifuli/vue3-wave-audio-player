@@ -15,7 +15,7 @@ npm i vue3-wave-audio-player
     :wave_width="250"
     :wave_height="40"
     wave_type="mirror"
-    src="/samples/file.mp"
+    src="/samples/file.mp3"
     />  
     <!-- optional wave_options -->
     <Vue3WaveAudioPlayer
@@ -23,7 +23,14 @@ npm i vue3-wave-audio-player
     :wave_height="40"
     :wave_options='{"samples":50}' 
     src="/samples/file.mp3"
+    :load_audio_onmount="false"
     />  
+    <Vue3WaveAudioPlayer
+    :wave_width="250"
+    :wave_height="40"
+    :wave_options='{"samples":40,"type":"steps","width":192,"height":40}'
+    src="/samples/file.mp3"
+    />   
   </div>
 </template>
 <script>
@@ -45,6 +52,7 @@ wave_width | True | Integer | Width of the Waves. (Not responsive, Also remember
 wave_height | True | Integer | Height of the waves (Not Responsive)
 wave_type | False | String | Type of wave. (Not working yet)
 wave_options | False | Object | Set settings for the waves (Not working yet)
+load_audio_onmount | True | Boolean | Load the path and audio data on mounted
 
 ### Events
 I have added all the events that html has in the audio tag with a "on_" prefix.
