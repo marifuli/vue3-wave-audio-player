@@ -1,14 +1,26 @@
 <template>
     <div part="player" ref="player" class="player">
         <button id="play" part="play" ref="play"
-        @click="playPause"
+        v-if="loading_audio_data"
         >
-            <svg viewBox="0 0 34 34" width="34" height="34" part="button" ref="button">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+            style="margin: auto; background: rgba(255, 255, 255, 0); display: block; shape-rendering: auto;" 
+            width="34px" height="34px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" 
+            >
+                <circle cx="50" cy="50" fill="none" stroke="#858a8d" stroke-width="10" r="35" stroke-dasharray="164.93361431346415 56.97787143782138">
+                <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform>
+                </circle>
+            </svg>
+        </button>
+        <button id="play" part="play" ref="play"
+        v-else @click="playPause"
+        >
+            <svg viewBox="0 0 34 34" width="34" height="34" part="button" ref="button" 
+            >
                 <path 
                 id="playPathButton" 
                 :d="audio_paused ? playPath : pausePath"
                 ></path>
-                <!--<path fill="currentColor" d="M9.2 25c0 .5.4 1 .9 1h3.6c.5 0 .9-.4.9-1V9c0-.5-.4-.9-.9-.9h-3.6c-.4-.1-.9.3-.9.9v16zm11-17c-.5 0-1 .4-1 .9V25c0 .5.4 1 1 1h3.6c.5 0 1-.4 1-1V9c0-.5-.4-.9-1-.9 0-.1-3.6-.1-3.6-.1z"></path>-->
             </svg>
         </button>
         <div id="current-time" part="currenttime" ref="currenttime">{{ currentTimeContainer_textContent }}</div>
@@ -91,8 +103,12 @@
         </div>
         <div id="duration" part="duration">{{ durationContainer_textContent }}</div>
     </div>
-    <audio :src="src" ref="audio_tag"
-    @loadedmetadata="loadSong"
+
+    <!-- 
+        <audio :src="src" ref="audio_tag"
+        @loadedmetadata="loadSong" 
+    -->
+    <audio ref="audio_tag"
     @ended="onFinish"
 
     @abort="$emit('on_abort', $event)"
@@ -119,6 +135,7 @@
 </template>
 
 <script>
+
 export default {
   props: {
     wave_width: {
@@ -197,6 +214,10 @@ export default {
 
       clipPathX: 'left-to-right-x',
       clipPathA: 'left-to-right',
+      audioContext: null,
+      audioSource: null,
+      loading_audio_data: false,
+      loaded_audio_data: false,
     }
   },
   beforeMount () {
@@ -227,6 +248,9 @@ export default {
     //- finish seettings
     this.clipPathX += '-' + Math.random().toString(36).slice(2)
     this.clipPathA += '-' + Math.random().toString(36).slice(2)
+
+    this.audioContext = new AudioContext()
+    this.audioSource = this.audioContext.createBufferSource()
   },
   mounted () {
     this.playPathButton = this.$refs.player.querySelector('#playPathButton')
@@ -243,6 +267,9 @@ export default {
 
     this.svg.pauseAnimations()
     this.animationsvg_val = '-'+ (this.wave_width + 2) +';-1'
+    
+    if(this.load_audio_onmount)
+        this.runAudioPath()
   },
   methods: {
     loadSong ($event) { // done
@@ -257,34 +284,26 @@ export default {
         this.svg.pauseAnimations()
         this.svg.setCurrentTime(0)
         this.$emit('on_loadedmetadata', $event)
-
-        if(!this.audioPathLoaded && this.load_audio_onmount)
-        {
-            this.audioPath()
-            this.audioPathLoaded = true 
-        }
     },
-    playPause () { //done 
-      if(!this.audioPathLoaded)
-      {
-        this.audioPath()
-        this.audioPathLoaded = true 
-      }
-      if(this.audio.paused) 
-      {
-          this.audio.play();
-          this.svg.unpauseAnimations();
-          this.path2.style.display = "block";
-          this.audio_paused = false 
-          this.raf = requestAnimationFrame(this.whilePlaying);
-      } 
-      else 
-      {
-          this.audio.pause();
-          this.svg.pauseAnimations();
-          this.audio_paused = true
-          cancelAnimationFrame(this.raf);
-      }
+    playPause () { 
+        if(!this.load_audio_onmount && !this.loaded_audio_data) {
+            return this.runAudioPath()
+        }
+        if(this.audio.paused) 
+        {
+            this.audio.play();
+            this.svg.unpauseAnimations();
+            this.path2.style.display = "block";
+            this.audio_paused = false 
+            this.raf = requestAnimationFrame(this.whilePlaying);
+        } 
+        else 
+        {
+            this.audio.pause();
+            this.svg.pauseAnimations();
+            this.audio_paused = true
+            cancelAnimationFrame(this.raf);
+        }
     },
     sliderInput () { // done
         this.path2_display = "block";
@@ -320,9 +339,11 @@ export default {
         this.svg.setCurrentTime(this.seekSlider.value);
         this.raf = requestAnimationFrame(this.whilePlaying);
     },
-    async audioPath() {
-        this.audioData = await this.getAudioData(this.src);
-        this.svgDraw();
+    async runAudioPath() {
+        // this.audioData = 
+        await this.getAudioData(this.src);
+        // this.loadSong()
+        // this.svgDraw();
     },
     svgDraw () {
         const path = this.linearPath(this.audioData, this.player_options);
@@ -350,14 +371,42 @@ export default {
      * Taken from the Wave file
      */
     getAudioData (url) {
-        window.AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioContext = new AudioContext();
+        // window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        // const audioContext = new AudioContext();
+        // let buff = null
+        this.loading_audio_data = true
         return fetch(url)
-        .then(response => response.arrayBuffer())
-        .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-        .catch(error => {
-            console.error(error);
-        });
+        .then((res) => {
+            return res.blob()
+            // return res.arrayBuffer()
+        })
+        .then(bl => {
+            this.waiting_to_load = false
+            let src = URL.createObjectURL(bl) 
+            this.audio.src = src 
+            let fileReader = new FileReader()
+            fileReader.onloadend = () => {
+                this.audioContext.decodeAudioData(
+                    fileReader.result, 
+                    (bufferData) => {
+                        this.loading_audio_data = false
+                        this.loaded_audio_data = true
+                        this.audioData = bufferData
+                        this.loadSong()
+                        this.svgDraw()    
+                    },
+                    (err) => {
+                        this.loading_audio_data = false
+                        this.$emit('on_error', err)
+                    }
+                )                
+            }
+            fileReader.readAsArrayBuffer(bl)
+        })
+        .catch((err) => {
+            this.loading_audio_data = false
+            this.$emit('on_error', err)
+        })
     },
     linearPath (audioBuffer, options) {
         const { 
@@ -819,128 +868,128 @@ export default {
 }
 </script>
 <style scoped >
-*, :after, :before { 
-    box-sizing: border-box;
-    margin: 0;
-}
-:host {
-    display: flex;
-    
-}
-.player {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-#play {
-    background: transparent;
-    border: none;
-    cursor:pointer;
-    padding: 0 0 0 10px;
-    margin: 0px;
-    
-}
-#play svg {
-    fill: #858a8d;
-    position:relative;
-    transition: transform 0.3s;
-    top: -0.5px;
-}
-#play svg:hover {
-    transform: scale(1.2);
-}
-#play svg path {
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: 0.2s;
-}
-#svg {
-    margin: 0 10px;
-    overflow: visible;
-    stroke-width: 1px;
-    fill: none;
-}
-#path1 {
-    stroke: #dadcdd; 
-    overflow: visible;
-    stroke-linecap: round;
-}
-#path2 {
-    stroke: #858a8d;
-    overflow: visible;
-    stroke-linecap: round;
-}
-#slider  {
-    position:relative;
-}
-#duration, #current-time {
-    position: relative;
-    top:-1.1px;
-    color: #858a8d;
-    margin: 0px 10px;
-    font-size: 16px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    min-width:32px;
-}
-#seek-slider {
-    position: absolute;
-    width: 100%;
-    left: 0;
-}
-input[type=range] {
-    -webkit-appearance: none; 
-    width: 100%; 
-    background: transparent; 
-    padding: 0px;
-    margin: 0px;
-    border: 0px;
-}  
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-}
-input[type=range]:focus {
-    outline: none; 
-}
+    *, :after, :before { 
+        box-sizing: border-box;
+        margin: 0;
+    }
+    :host {
+        display: flex;
+        
+    }
+    .player {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    #play {
+        background: transparent;
+        border: none;
+        cursor:pointer;
+        padding: 0 0 0 10px;
+        margin: 0px;
+        
+    }
+    #play svg {
+        fill: #858a8d;
+        position:relative;
+        transition: transform 0.3s;
+        top: -0.5px;
+    }
+    #play svg:hover {
+        transform: scale(1.2);
+    }
+    #play svg path {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: 0.2s;
+    }
+    #svg {
+        margin: 0 10px;
+        overflow: visible;
+        stroke-width: 1px;
+        fill: none;
+    }
+    #path1 {
+        stroke: #dadcdd; 
+        overflow: visible;
+        stroke-linecap: round;
+    }
+    #path2 {
+        stroke: #858a8d;
+        overflow: visible;
+        stroke-linecap: round;
+    }
+    #slider  {
+        position:relative;
+    }
+    #duration, #current-time {
+        position: relative;
+        top:-1.1px;
+        color: #858a8d;
+        margin: 0px 10px;
+        font-size: 16px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        min-width:32px;
+    }
+    #seek-slider {
+        position: absolute;
+        width: 100%;
+        left: 0;
+    }
+    input[type=range] {
+        -webkit-appearance: none; 
+        width: 100%; 
+        background: transparent; 
+        padding: 0px;
+        margin: 0px;
+        border: 0px;
+    }  
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+    }
+    input[type=range]:focus {
+        outline: none; 
+    }
 
-input[type=range]::-ms-track {
-    width: 100%;
-    cursor: pointer;
-    /* Hides the slider so custom styles can be added */
-    background: transparent; 
-    border-color: transparent;
-    color: transparent;
-}
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    position:relative; 
-    /*top: -1.5px;*/
-    height: 12.5px;
-    width: 12.5px;
-    border-radius: 50%;
-    background: #4fc3f7;
-    cursor: pointer;
-    box-shadow: none;
-}
-input[type="range"]::-webkit-slider-thumb {
-    transition: transform 0.3s;
-}
-input[type="range"]:active::-webkit-slider-thumb {
-    transform: scale(1.5);
-}
-input[type="range"]::-moz-range-thumb {
-    height: 12.5px;
-    width: 12.5px;
-    border-radius: 50%;
-    background: #4fc3f7;
-    cursor: pointer;
-    box-shadow: none;
-    border: 0px;
-}
+    input[type=range]::-ms-track {
+        width: 100%;
+        cursor: pointer;
+        /* Hides the slider so custom styles can be added */
+        background: transparent; 
+        border-color: transparent;
+        color: transparent;
+    }
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        position:relative; 
+        /*top: -1.5px;*/
+        height: 12.5px;
+        width: 12.5px;
+        border-radius: 50%;
+        background: #4fc3f7;
+        cursor: pointer;
+        box-shadow: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        transition: transform 0.3s;
+    }
+    input[type="range"]:active::-webkit-slider-thumb {
+        transform: scale(1.5);
+    }
+    input[type="range"]::-moz-range-thumb {
+        height: 12.5px;
+        width: 12.5px;
+        border-radius: 50%;
+        background: #4fc3f7;
+        cursor: pointer;
+        box-shadow: none;
+        border: 0px;
+    }
 
-input[type="range"]:active::-moz-range-thumb {
-    transform: scale(1.5);
-}  
-span {
-    color: red;
-}
+    input[type="range"]:active::-moz-range-thumb {
+        transform: scale(1.5);
+    }  
+    span {
+        color: red;
+    }
 </style>
