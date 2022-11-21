@@ -377,7 +377,14 @@ export default {
         this.loading_audio_data = true
         return fetch(url)
         .then((res) => {
-            return res.blob()
+            return res.blob().then((raw) => {
+                // console.log( !res.headers.get('Content-Type').includes('audio/') )
+                if( !res.headers.get('Content-Type').includes('audio/') ) {
+                    this.$emit('on_error', {message: 'Invalid audio type', type: 'not_audio'})
+                    return null
+                }
+                return raw;
+            })
             // return res.arrayBuffer()
         })
         .then(bl => {
