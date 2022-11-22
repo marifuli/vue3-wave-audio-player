@@ -6,8 +6,10 @@
     :wave_height="40"
     wave_type="mirror"
     src="/samples/33mb.wav"
+    :disable_seeking="true"
+    @tried_to_seek="tried_to_seek"
     />  
-
+    
     <!-- optional wave_options -->
     <Vue3WaveAudioPlayer
     :wave_width="250"
@@ -17,6 +19,7 @@
     :load_audio_onmount="false"
     />  
     <Vue3WaveAudioPlayer
+    @tried_to_seek="tried_to_seek"
     :wave_width="250"
     :wave_height="40"
     :wave_options='{"samples":40,"type":"steps","width":192,"height":40}'
@@ -55,6 +58,12 @@ export default {
     onError (e) {
       console.log(e)
     },
+    tried_to_seek (didSkip) {
+      if(didSkip)
+        console.log('Player skipped')
+      else
+        console.log('Player skip blocked')
+    }
   }
 }
 </script>

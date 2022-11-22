@@ -137,6 +137,30 @@
 <script>
 
 export default {
+  emits: [
+    "tried_to_seek",
+    "waiting",
+    "on_volumechange",
+    "on_timeupdate",
+    "on_suspend",
+    "on_stalled",
+    "on_seeking",
+    "on_seeked",
+    "on_ratechange",
+    "on_progress",
+    "on_playing",
+    "on_play",
+    "on_pause",
+    "on_loadstart",
+    "on_loadeddata",
+    "on_error",
+    "on_emptied",
+    "on_durationchange",
+    "on_canplaythrough",
+    "on_canplay",
+    "on_abort",
+    "on_loadedmetadata"
+  ],
   props: {
     wave_width: {
       type: Number,
@@ -164,6 +188,10 @@ export default {
     load_audio_onmount: {
       type: Boolean,
       default: true
+    },
+    disable_seeking: {
+      type: Boolean,
+      default: false
     },
   },
   data () {
@@ -314,6 +342,11 @@ export default {
         }
     },
     sliderChange () { //done 
+        if(this.disable_seeking) {
+            this.whilePlaying()
+            return this.$emit('tried_to_seek', false)
+        }
+        this.$emit('tried_to_seek', true)
         this.audio.currentTime = this.seekSlider.value;
         this.path2_display = "block";
         this.svg.setCurrentTime(this.seekSlider.value);
