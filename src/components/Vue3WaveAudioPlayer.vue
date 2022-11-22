@@ -429,11 +429,13 @@ export default {
                 this.audioContext.decodeAudioData(
                     fileReader.result, 
                     (bufferData) => {
-                        this.loading_audio_data = false
-                        this.loaded_audio_data = true
                         this.audioData = bufferData
-                        this.loadSong()
-                        this.svgDraw()    
+                        setTimeout(() => {
+                            this.loading_audio_data = false
+                            this.loaded_audio_data = true
+                            this.loadSong()
+                            this.svgDraw()    
+                        }, 1000)
                     },
                     (err) => {
                         this.loading_audio_data = false
