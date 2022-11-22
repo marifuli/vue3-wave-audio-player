@@ -52,10 +52,15 @@ wave_width | True | Integer | Width of the Waves. (Not responsive, Also remember
 wave_height | True | Integer | Height of the waves (Not Responsive)
 wave_type | False | String | Type of wave. (Not working yet)
 wave_options | False | Object | Set settings for the waves (Not working yet)
-load_audio_onmount | True | Boolean | Load the path and audio data on mounted
+load_audio_onmount | False | Boolean | Load the path and audio data on mounted
+disable_seeking | False | Boolean | Disable time seeking
 
 ### Events
 I have added all the events that html has in the audio tag with a "on_" prefix.
+Additional events:
+Name | Required | Type | Return | Description
+--- | --- | --- | --- | ---  
+tried_to_seek | False | Func  | Boolean | Triggered when user try to seek time
 ```
 // Example 
 <Vue3WaveAudioPlayer
