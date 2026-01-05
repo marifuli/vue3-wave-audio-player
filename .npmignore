@@ -3,6 +3,7 @@ node_modules
 /dist
 /public/samples
 /src/assets/samples
+/src/dev
 
 # local env files
 .env.local
