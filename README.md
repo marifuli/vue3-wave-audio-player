@@ -78,6 +78,9 @@ Check [MDN Doc](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio)
 please send a mail at imdarif122@mail.com or contact@arifdev.com. 
 You can also open any issue in the [GitHub](https://github.com/marifuli/vue3-wave-audio-player) page. Thanks for using this package.
 
+### Sponsored By:
+[Kilo Code](https://kilo.ai/)
+
 ### Inspired by:
 [wave-path-audio-player](https://www.npmjs.com/package/wave-audio-path-player) package
 [waveform-path](https://jerosoler.github.io/waveform-path) package
