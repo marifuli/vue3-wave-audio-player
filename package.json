@@ -1,14 +1,15 @@
 {
   "name": "vue3-wave-audio-player",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "Vue 3 Component for wave audio player",
   "license": "MIT",
   "author": "Ariful Islam <imdarif122@mail.com>",
   "private": false,
+  "main": "dist/vue3-wave-audio-player.umd.js",
+  "module": "dist/vue3-wave-audio-player.es.js",
   "files": [
-    "src"
+    "dist"
   ],
-  "main": "./src/main.js",
   "keywords": [
     "vue-audio-player",
     "vue3-audio-player",
@@ -24,36 +25,19 @@
     "url": "https://github.com/marifuli/vue3-wave-audio-player"
   },
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "core-js": "^3.8.3",
     "vue": "^3.2.13"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
+    "@vitejs/plugin-vue": "^6.0.3",
+    "eslint": "^9.39.2",
+    "eslint-plugin-vue": "^10.6.2",
+    "vite": "^7.3.0"
   },
   "browserslist": [
     "> 1%",

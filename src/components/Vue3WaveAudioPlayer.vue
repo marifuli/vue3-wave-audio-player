@@ -137,6 +137,7 @@
 <script>
 
 export default {
+  name: 'Vue3WaveAudioPlayer',
   emits: [
     "tried_to_seek",
     "waiting",
