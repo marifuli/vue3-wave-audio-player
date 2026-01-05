@@ -1,6 +1,6 @@
 {
   "name": "vue3-wave-audio-player",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Vue 3 Component for wave audio player",
   "license": "MIT",
   "author": "Ariful Islam <imdarif122@mail.com>",
@@ -26,7 +26,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -37,7 +37,9 @@
     "@vitejs/plugin-vue": "^6.0.3",
     "eslint": "^9.39.2",
     "eslint-plugin-vue": "^10.6.2",
-    "vite": "^7.3.0"
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0",
+    "vue-tsc": "^3.2.1"
   },
   "browserslist": [
     "> 1%",
