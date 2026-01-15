@@ -2,34 +2,34 @@
   <div style="max-width: 250px">
 
     <Vue3WaveAudioPlayer
-    :wave_width="250"
-    :wave_height="40"
-    wave_type="mirror"
-    src="/samples/33mb.wav"
-    :disable_seeking="true"
-    @tried_to_seek="tried_to_seek"
+      :wave_width="250"
+      :wave_height="40"
+      wave_type="mirror"
+      src="/samples/33mb.wav"
+      :disable_seeking="true"
+      @tried_to_seek="tried_to_seek"
     />  
     
     <!-- optional wave_options -->
     <Vue3WaveAudioPlayer
-    :wave_width="250"
-    :wave_height="40"
-    :wave_options='{"samples":50}' 
-    src="/samples/file.mp3"
-    :load_audio_onmount="false"
+      :wave_width="250"
+      :wave_height="40"
+      :wave_options='{"samples":50}' 
+      src="/samples/file.mp3"
+      :load_audio_onmount="false"
     />  
     <Vue3WaveAudioPlayer
-    @tried_to_seek="tried_to_seek"
-    :wave_width="250"
-    :wave_height="40"
-    :wave_options='{"samples":40,"type":"steps","width":192,"height":40}'
-    src="/samples/file.mp3"
+      @tried_to_seek="tried_to_seek"
+      :wave_width="250"
+      :wave_height="40"
+      :wave_options='{"samples":40,"type":"steps","width":192,"height":40}'
+      src="/samples/file.mp3"
     />  
     <Vue3WaveAudioPlayer
-    :wave_width="250"
-    :wave_height="40"
-    :wave_options="example_options"
-    src="/samples/file.mp3"
+      :wave_width="250"
+      :wave_height="40"
+      :wave_options="example_options"
+      src="/samples/file.mp3"
     />  
   </div>
 </template>
